@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,35 +29,29 @@ public class Main {
 
         while (m.find()) {
             for (int i = 0; i < m.groupCount(); i++) {
-               // System.out.println("Время: " + m.group(1) + " Сообщение " + m.group(3));
+                // System.out.println("Время: " + m.group(1) + " Сообщение " + m.group(3));
             }
         }
 
-        String[] lines = logsName.split("\n");
+        // String[] lines = logsName.split("\n");
 
+        String matchTime = "(\\d{4}-\\d{2}-\\d{2}).*?((\\d{2}:){2}\\d{2}.\\d{3}).*?(\\[.*?]\\s)(.*?\\s:\\s)";
 
-        String matchTime = "\\d{4}-\\d{2}-\\d{2}";
-        
-        for (String line: lines){
-            boolean isMatchDate = line.matches("\\d{4}-\\d{2}-\\d{2}");
-            System.out.println(line);
-            System.out.println("Дата валидна: "+isMatchDate);
+        Pattern p1 = Pattern.compile(matchTime);
+        Matcher m1 = p1.matcher(logsName);
 
-            boolean isMatchTime = line.matches("(\\d{2}:){2}\\d{2}.\\d{3}");
-            System.out.println("Время валидно: " + isMatchTime);
+        while (m1.find()) {
+            boolean isMatchDate = Pattern.matches("(\\d{4}-\\d{2}-\\d{2})", m1.group(1));
+            System.out.println("Дата валидная " + isMatchDate);
+            boolean isMatchTime = Pattern.matches("((\\d{2}:){2}\\d{2}.\\d{3})", m1.group(2));
+            System.out.println("Время валидное: " + isMatchTime);
+            boolean isMatchMessage = Pattern.matches("(.*?\\s:\\s)", m1.group(5));
+            System.out.println("Сообщение валидное: " + isMatchMessage);
 
-            boolean isMatchText = line.matches("(\\[.*?]\\s)(.*?\\s:\\s)");
-            System.out.println("Текст валидный: " + isMatchText);
-
-
-           // String matchTime = "\\d{4}-\\d{2}-\\d{2}";
-            System.out.println(line.matches(matchTime));
         }
 
-        System.out.println(lines[0].matches(matchTime));
 
-
-
+        System.out.println(logsName.replaceAll("((\\d{2}:){2}\\d{2}.\\d{3})", "<time unknown>"));
 
 
     }
